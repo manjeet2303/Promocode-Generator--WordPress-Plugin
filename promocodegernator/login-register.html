@@ -1,0 +1,443 @@
+<html>
+<head>
+<style>
+/***FIRST STYLE THE BUTTON***/
+input.gobutton{
+cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+padding:5px 25px; /*add some padding to the inside of the button*/
+background:#35b128; /*the colour of the button*/
+border:1px solid #33842a; /*required or the default border for the browser will appear*/
+/*give the button curved corners, alter the size as required*/
+-moz-border-radius: 10px;
+-webkit-border-radius: 10px;
+border-radius: 10px;
+/*give the button a drop shadow*/
+-webkit-box-shadow: 0 0 4px rgba(0,0,0, .75);
+-moz-box-shadow: 0 0 4px rgba(0,0,0, .75);
+box-shadow: 0 0 4px rgba(0,0,0, .75);
+/*style the text*/
+color:#f3f3f3;
+font-size:1.1em;
+}
+/***NOW STYLE THE BUTTON'S HOVER AND FOCUS STATES***/
+input.gobutton:hover, input.gobutton:focus{
+background-color :#399630; /*make the background a little darker*/
+/*reduce the drop shadow size to give a pushed button effect*/
+-webkit-box-shadow: 0 0 1px rgba(0,0,0, .75);
+-moz-box-shadow: 0 0 1px rgba(0,0,0, .75);
+box-shadow: 0 0 1px rgba(0,0,0, .75);
+}
+
+#wrapper > div {
+    margin-top: 100px;
+}
+	
+.login-block {
+    width: 320px;
+    padding: 20px;
+    background: #dedede none repeat scroll 0 0;
+    border-radius: 5px;
+    border-top: 5px solid #ff656c;
+    margin: 0 auto;
+}
+
+.login-block h1 {
+    text-align: center;
+    color: #000;
+    font-size: 18px;
+    text-transform: uppercase;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.login-block input {
+    width: 100%;
+    height: 42px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-family: Montserrat;
+    padding: 0 20px 0 50px;
+    outline: none;
+}
+
+.login-block input#name {
+    background: #fff url('http://i.imgur.com/u0XmBmv.png') 20px top no-repeat;
+    background-size: 16px 80px;
+}
+
+.login-block input#name:focus {
+    background: #fff url('http://i.imgur.com/u0XmBmv.png') 20px bottom no-repeat;
+    background-size: 16px 80px;
+}
+
+.login-block input.username {
+    background: #fff url('http://i.imgur.com/u0XmBmv.png') 20px top no-repeat;
+    background-size: 16px 80px;
+}
+
+.login-block input.username:focus {
+    background: #fff url('http://i.imgur.com/u0XmBmv.png') 20px bottom no-repeat;
+    background-size: 16px 80px;
+}
+
+.login-block input.password {
+    background: #fff url('http://i.imgur.com/Qf83FTt.png') 20px top no-repeat;
+    background-size: 16px 80px;
+}
+
+.login-block input.password:focus {
+    background: #fff url('http://i.imgur.com/Qf83FTt.png') 20px bottom no-repeat;
+    background-size: 16px 80px;
+}
+
+.login-block input:active, .login-block input:focus {
+    border: 1px solid #ff656c;
+}
+
+.login-block button {
+    width: 100%;
+    height: 40px;
+    background: #ff656c;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #e15960;
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 14px;
+    font-family: Montserrat;
+    outline: none;
+    cursor: pointer;
+}
+
+.login-block button:hover {
+    background: #ff7b81;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+function subDisplay(name)
+{
+    $('#wrapper').children().hide();
+    $(name).show();
+}
+function login()
+{
+  //alert('login now');
+  subDisplay('#login_form');
+}
+
+function register()
+{
+  //alert('register');
+  subDisplay('#register_form');
+}
+function register_user()
+{
+  console.log('resgster data....');
+  
+  var name = $('#name').val();
+  
+  var username = $('#register_email').val();
+  
+  var password = $('#register_pwd').val();
+  
+  if(!name)
+  {
+    alert('Please Enter Your Name');
+	$('#name').focus();
+	return false;
+  }
+  
+  if(!username)
+  {
+    alert('Please Enter Your Email');
+	$('#register_email').focus();
+	return false;
+  }
+  else
+  {
+         var emailID = username;
+         atpos = emailID.indexOf("@");
+         dotpos = emailID.lastIndexOf(".");
+         
+         if (atpos < 1 || ( dotpos - atpos < 2 )) 
+         {
+            alert("Please enter correct email ID")
+            $('#register_email').focus();
+            return false;
+         }
+  }
+  
+  if(!password)
+  {
+    alert('Please Enter Your Password');
+	$('#register_pwd').focus();
+	return false;
+  }
+  
+  $.ajax({
+	       type : "post",
+	       url: "http://pittmanpillow.com/wp-admin/admin-ajax.php",
+           data :{ action: "register_user", name: name, username: username, password: password },		  
+		   success: function(result)
+		   {
+             console.log(result);
+
+			 		 
+			 if(result=="no")
+			 {
+			   $('#success_msg').show();
+			
+     		   $('#success_msg h1').text('This Email Already Exist').css('color','red');    		   
+			 }
+			 else
+			 {
+				$('#success_msg').show();
+			
+     		    $('#success_msg h1').text('You are Registered Successfully').css('color','green');  	
+				
+				$('#name').val('');
+  
+                $('#register_email').val('');
+  
+                $('#register_pwd').val('');
+				
+				$('#register_form').hide(5000, function()
+				{
+                         
+						$('#login_form').show(1000);
+                
+				});
+                						
+				
+			 }
+			 
+			 
+           },
+		   error: function(error)
+		   {
+		     //cosnole.log(error);
+		     alert('Connection is lost');
+		   }
+		 }); 
+  
+}
+
+function login_user()
+{
+   var email = $('#login_email').val();
+  
+   var password = $('#login_pwd').val();
+   
+  if(!email)
+  {
+    alert('Please Enter Your Email');
+	$('#login_email').focus();
+	return false;
+  }
+  
+  else
+  {
+         var emailID = email;
+         atpos = emailID.indexOf("@");
+         dotpos = emailID.lastIndexOf(".");
+         
+         if (atpos < 1 || ( dotpos - atpos < 2 )) 
+         {
+            alert("Please enter correct email ID")
+            $('#login_email').focus();
+            return false;
+         }
+  }
+  
+  if(!password)
+  {
+    alert('Please Enter Your Password');
+	$('#login_pwd').focus();
+	return false;
+  }
+  
+  $.ajax({
+	       type : "post",
+	       url: "http://pittmanpillow.com/wp-admin/admin-ajax.php",
+           data :{ action: "login_user", email: email, password: password },		  
+		   success: function(result)
+		   {
+             console.log(result);
+			  
+			 if(result=="no")
+			 {
+			   $('#success_msg_login').show();
+			
+     		   $('#success_msg_login h1').text('Invalid Email or Password').css('color','red');    		   
+			 }
+			 else
+			 {
+				$('#success_msg_login').show();
+			
+     		    $('#success_msg_login h1').text('You have login Successfully').css('color','green');  	
+				
+				$('#login_email').val('');
+  
+                $('#login_pwd').val('');  
+
+                $('#login_form').hide(5000, function()
+				{
+                        setCookie('user_login',email,1); 
+						
+						$('#promo_code_form').show(1000);
+                
+				});				
+				
+			 }
+						 
+           },
+		   error: function(error)
+		   {
+		     //cosnole.log(error);
+		     alert('Connection is lost');
+		   }
+		 }); 
+}
+
+function user_promo()
+{
+  var user_promo_code = $('#user_promo_code').val();
+
+  if(!user_promo_code)
+  {
+    alert('Please Enter Your Promo Code');
+	$('#user_promo_code').focus();
+	return false;
+  }
+  
+  $.ajax({
+	       type : "post",
+	       url: "http://pittmanpillow.com/wp-admin/admin-ajax.php",
+           data :{ action: "check_promo", promo_code: user_promo_code },		  
+		   success: function(result)
+		   {
+             console.log(result);
+			  
+			 if(result=="no")
+			 {
+			   $('#success_msg_promo_form').show();
+			
+     		   $('#success_msg_promo_form h1').text('Invalid Promo Code').css('color','red');    		   
+			 }
+			 else
+			 {
+				$('#success_msg_promo_form').show();
+			
+     		    $('#success_msg_promo_form h1').text('Promo Code Applied Successfully').css('color','green');  	
+				
+				$('#user_promo_code').val('');				
+				
+
+                $('#promo_code_form').hide(5000, function()
+				{
+                        setCookie('promo_code',user_promo_code,1); 
+						parent.jQuery.fancybox.close();
+                
+				});			
+
+				
+				
+			 }
+			 
+           },
+		   error: function(error)
+		   {
+		     //cosnole.log(error);
+		     alert('Connection is lost');
+		   }
+		 }); 
+      
+}
+
+            function setCookie(cname,cvalue,exdays)
+			{
+				console.log('cookie is set');
+				var d = new Date();
+				d.setTime(d.getTime() + (exdays*24*60*60*1000));
+				var expires = "expires=" + d.toGMTString();
+				document.cookie = cname+"="+cvalue+"; "+expires;
+			}
+
+			function getCookie(cname)
+			{
+				var name = cname + "=";
+				var ca = document.cookie.split(';');
+				for(var i=0; i<ca.length; i++)
+				{
+				 var c = ca[i];
+				 while (c.charAt(0)==' ') c = c.substring(1);
+				 if (c.indexOf(name) == 0)
+				 {
+				    return c.substring(name.length, c.length);
+				  }
+				}
+				return "";
+			}
+
+			function checkCookie(cname)
+			{
+				var user = getCookie(cname);
+				
+				if (user != "")
+				{
+				  return true;
+				}
+				else
+				{
+ 				  return false;
+				}
+			}
+</script>
+</head>
+<body style="text-align:center;">
+<div id="wrapper">
+<div id="buttons">
+<input type="button" value="login" id="login" class="gobutton" onclick="javascript:login();"/>
+<input type="button" value="Register" id="register" class="gobutton" onclick="javascript:register();"/>
+</div>
+<div id="login_form" style="display:none;">
+<div id="success_msg_login" style="display:none;">
+<h1></h1>
+</div>
+<div class="login-block">
+    <h1>Login</h1>
+    <input type="text" value="" placeholder="Username" class="username" id="login_email"/>
+    <input type="password" value="" placeholder="Password" class="password" id="login_pwd" />
+    <button onclick="javascript:login_user();">Submit</button>
+</div>
+</div>
+<div id="register_form" style="display:none;">
+<div id="success_msg" style="display:none;">
+<h1></h1>
+</div>
+<div class="login-block">
+    <h1>Register</h1>
+	<input type="text" value="" placeholder="Enter Your Name" id="name" />
+    <input type="text" value="" placeholder="Email" class="username" id="register_email" />
+    <input type="password" value="" placeholder="Password" class="password" id="register_pwd" />
+    <button id="register_button" onclick="javascript:register_user();">Submit</button>
+</div>
+</div>
+<div id="promo_code_form" style="display:none;">
+<div id="success_msg_promo_form" style="display:none;">
+<h1></h1>
+</div>
+<div class="login-block">
+    <h1>Enter Promo Code</h1>
+	<input type="text" value="" placeholder="Enter Your Promo Code" id="user_promo_code" />
+    <button id="user_promo_button" onclick="javascript:user_promo();">Submit</button>
+</div>
+</div>
+</div>
+</body>
+</html>
